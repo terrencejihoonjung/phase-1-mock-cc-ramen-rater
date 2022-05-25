@@ -26,10 +26,8 @@ fetch("http://localhost:3000/ramens/1")
 //Iterate through each ramen item, grab their image URL, create an image element and add to the ramen-menu div
 function addRamenImage(ramens) {
     ramens.forEach(ramen => {
-        const imageURL = ramen.image;
         const ramenImage = document.createElement("img");
-        ramenImage.src = imageURL;
-        ramenImage.id = ramen.id;
+        ramenImage.src = ramen.image;;
         ramenMenu.append(ramenImage);
 
         //Listen for a click event to display ramen information
