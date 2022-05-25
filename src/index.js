@@ -11,12 +11,17 @@ const ramenDetail = document.querySelector("#ramen-detail");
 const ramenRating = document.querySelector("#rating-display");
 const ramenComment = document.querySelector("#comment-display");
 const form = document.querySelector("#new-ramen");
+const editform = document.querySelector("#edit-ramen")
+const removeButton = document.querySelector("#remove-ramen")
 
-//ADD RAMEN IMAGES TO DOM 
 //Fetch data from server
 fetch("http://localhost:3000/ramens")
     .then(response => response.json())
     .then(ramens => addRamenImage(ramens));
+
+fetch("http://localhost:3000/ramens/1")
+    .then(response => response.json())
+    .then(firstRamen => defaultDetail(firstRamen));
 
 //Iterate through each ramen item, grab their image URL, create an image element and add to the ramen-menu div
 function addRamenImage(ramens) {
@@ -24,6 +29,7 @@ function addRamenImage(ramens) {
         const imageURL = ramen.image;
         const ramenImage = document.createElement("img");
         ramenImage.src = imageURL;
+        ramenImage.id = ramen.id;
         ramenMenu.append(ramenImage);
 
         //Listen for a click event to display ramen information
@@ -41,6 +47,9 @@ function addRamenImage(ramens) {
             ramenRating.textContent = ramen.rating;
             ramenComment.textContent = ramen.comment;
         })
+        
+        //Listen for a submit event that edits comment and rating
+        editform.addEventListener("submit", updateRamen);
     });
 }
 
@@ -74,4 +83,31 @@ function buildAndAddRamen(formInfo) {
         ramenRating.textContent = formInfo.rating.value;
         ramenComment.textContent = formInfo["new-comment"].value;
     })
+
+    //Listen for a submit event that edits comment and rating
+    editform.addEventListener("submit", updateRamen);
+}
+
+//ADVANCED DELIVERABLES
+//Make first ramen the default detail
+function defaultDetail(firstRamen) {
+    const img = ramenDetail.querySelector("img")
+    img.src = firstRamen.image;
+    img.alt = firstRamen.name;
+
+    const name = ramenDetail.querySelector("h2");
+    name.textContent = firstRamen.name;
+
+    const restaurant = ramenDetail.querySelector("h3");
+    restaurant.textContent = firstRamen.restaurant;
+
+    ramenRating.textContent = firstRamen.rating;
+    ramenComment.textContent = firstRamen.comment;
+}
+
+//Updates the rating and comment submitted by the form
+function updateRamen(e) {
+    e.preventDefault();
+    ramenRating.textContent = e.target.rating.value;
+    ramenComment.textContent = e.target["new-comment"].value;
 }
