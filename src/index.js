@@ -25,61 +25,42 @@ fetch("http://localhost:3000/ramens/1")
 
 //Iterate through each ramen item, grab their image URL, create an image element and add to the ramen-menu div
 function addRamenImage(ramens) {
-    ramens.forEach(ramen => {
-        const ramenImage = document.createElement("img");
-        ramenImage.src = ramen.image;;
-        ramenMenu.append(ramenImage);
-
-        //Listen for a click event to display ramen information
-        ramenImage.addEventListener("click", function(e) {
-            const img = ramenDetail.querySelector("img")
-            img.src = ramen.image;
-            img.alt = ramen.name;
-
-            const name = ramenDetail.querySelector("h2");
-            name.textContent = ramen.name;
-
-            const restaurant = ramenDetail.querySelector("h3");
-            restaurant.textContent = ramen.restaurant;
-
-            ramenRating.textContent = ramen.rating;
-            ramenComment.textContent = ramen.comment;
-        })
-        
-        //Listen for a submit event that edits comment and rating
-        editform.addEventListener("submit", updateRamen);
-    });
+    ramens.forEach(showRamenDetails);
 }
 
 //listen for a submit event to call addItem
-form.addEventListener("submit", addItem);
-
-//Add items submitted in the form to db.json
-function addItem(e) {
+form.addEventListener("submit", function(e) {
     e.preventDefault();
-    buildAndAddRamen(e.target);
-}
+    const submitRamen = {
+        name: e.target.name.value,
+        restaurant: e.target.restaurant.value, 
+        image: e.target.image.value,
+        rating: e.target.rating.value,
+        comment: e.target["new-comment"].value
+    }
+    showRamenDetails(submitRamen);
+});
 
 //Take form image url information and add the image to the menu
-function buildAndAddRamen(formInfo) {
-    const image = document.createElement("img");
-    image.src = formInfo.image.value;
-    ramenMenu.append(image);
+function showRamenDetails(ramen) {
+    const ramenImage = document.createElement("img");
+    ramenImage.src = ramen.image;
+    ramenMenu.append(ramenImage);
 
-    //Listen for image click to add form information to the front
-    image.addEventListener("click", function(e) {
+    //Listen for a click event to display ramen information
+    ramenImage.addEventListener("click", function(e) {
         const img = ramenDetail.querySelector("img")
-        img.src = formInfo.image.value;
-        img.alt = formInfo.name.value;
+        img.src = ramen.image;
+        img.alt = ramen.name;
 
         const name = ramenDetail.querySelector("h2");
-        name.textContent = formInfo.name.value;
+        name.textContent = ramen.name;
 
         const restaurant = ramenDetail.querySelector("h3");
-        restaurant.textContent = formInfo.restaurant.value;
+        restaurant.textContent = ramen.restaurant;
 
-        ramenRating.textContent = formInfo.rating.value;
-        ramenComment.textContent = formInfo["new-comment"].value;
+        ramenRating.textContent = ramen.rating;
+        ramenComment.textContent = ramen.comment;
     })
 
     //Listen for a submit event that edits comment and rating
